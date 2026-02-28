@@ -19,12 +19,14 @@ For production, swap local file storage for S3/Cloudflare R2.
 import os
 import uuid
 import tempfile
+from flask_cors import CORS
 from pathlib import Path
 from flask import Flask, request, jsonify, send_from_directory
 from werkzeug.utils import secure_filename
 from analysis_pipeline import analyze_tennis_video
 
 app = Flask(__name__, static_folder="../frontend")
+CORS(app)
 
 # ─────────────────────────────────────────
 # CONFIGURATION
