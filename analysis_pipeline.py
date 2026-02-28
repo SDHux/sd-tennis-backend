@@ -107,17 +107,20 @@ def extract_frames(video_path: str, num_frames: int = FRAMES_TO_EXTRACT) -> list
 
 
 def get_video_duration(video_path: str) -> float:
-    """Uses FFprobe to get video duration in seconds."""
+    """Uses FFmpeg to get video duration in seconds."""
+    import re
     cmd = [
-        "ffprobe",
-        "-v", "quiet",
-        "-print_format", "json",
-        "-show_format",
-        video_path
+        "ffmpeg",
+        "-i", video_path,
+        "-f", "null",
+        "-"
     ]
     result = subprocess.run(cmd, capture_output=True, text=True)
-    data = json.loads(result.stdout)
-    return float(data["format"]["duration"])
+    match = re.search(r'Duration: (\d+):(\d+):(\d+\.\d+)', result.stderr)
+    if not match:
+        raise RuntimeError("Could not determine video duration")
+    hours, minutes, seconds = match.groups()
+    return float(hours) * 3600 + float(minutes) * 60 + float(seconds)
 
 
 # ─────────────────────────────────────────────────────────
