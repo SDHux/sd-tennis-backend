@@ -122,6 +122,9 @@ def analyze():
             return jsonify(result), 500
 
     except Exception as e:
+        import traceback
+        print(f"EXCEPTION in /api/analyze: {e}")
+        traceback.print_exc()
         return jsonify({
             'success': False,
             'error': f'Server error: {str(e)}'
